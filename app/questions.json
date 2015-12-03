@@ -1,0 +1,10 @@
+[
+    {
+        "question": "Could you describe the difference between a cookie, sessionStorage and localStorage?",
+        "answer": "LocalStorage stores information as long as the user does not delete them. SessionStorage stores information as long as the session goes. Usually until the user closes the tab/browser. Cookies are simply cookies, which are supported by older browsers and usually are a fallback for frameworks that use the above mentioned WebStorages. In contrast cookies can store way less information then WebStorages and the information in WebStorages is never transferred to the server."
+    },
+    {
+        "question": "Could you describe the techniques you know for hiding text but in order to make it readable by a screen reader?",
+        "answer": "visibility: hidden. You hide the element but it's still present in the DOM. text-indent: -10000px; This approach moves the content to the left 10000 pixels - thus off the visible screen."
+    }
+]
