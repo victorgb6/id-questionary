@@ -79,12 +79,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span>Home</span>
           </a>
 
-          <a data-route="users" href="/random-question" on-click="onDataRouteClick">
+          <a data-route="random-question" href="/random-question" on-click="onDataRouteClick">
             <iron-icon icon="av:shuffle"></iron-icon>
             <span>Random Question</span>
           </a>
 
-          <a data-route="contact" href="/add-question" on-click="onDataRouteClick">
+          <a data-route="add-question" href="/add-question" on-click="onDataRouteClick">
             <iron-icon icon="add-box"></iron-icon>
             <span>Add a question</span>
           </a>
@@ -98,10 +98,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-toolbar id="mainToolbar" class="tall">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
 
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
@@ -121,24 +117,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="home">
               <h3><span>Questions List:</span></h3>
-
                 <questions-list></questions-list>
-
             </section>
 
             <section data-route="random-question">
-              <paper-material elevation="1">
-                <h2 class="page-title">Random Question</h2>
-                <p>This is the users section</p>
-                <a href="/users/Rob">Rob</a>
-              </paper-material>
+              <h3><span>Random Question</span></h3>
+              <questions-list is-random="1"></questions-list>
             </section>
 
             <section data-route="add-question">
-              <paper-material elevation="1">
-                <h2 class="page-title">Add a question</h2>
-                <p>Here needs to be a form</p>
-              </paper-material>
+              <h3><span>Add a question</span></h3>
+              <add-question></add-question>
             </section>
 
           </iron-pages>

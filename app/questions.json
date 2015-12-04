@@ -5,6 +5,6 @@
     },
     {
         "question": "Could you describe the techniques you know for hiding text but in order to make it readable by a screen reader?",
-        "answer": "visibility: hidden. You hide the element but it's still present in the DOM. text-indent: -10000px; This approach moves the content to the left 10000 pixels - thus off the visible screen."
+        "answer": "visibility: hidden. You hide the element but it's still present in the DOM. text-indent: -10000px; This approach moves the content to the left 10000 pixels - thus off the visible screen. position: absolute !important; clip: rect(1px 1px 1px 1px); /* IE6, IE7 */ clip: rect(1px, 1px, 1px, 1px);"
     }
 ]

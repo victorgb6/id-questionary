@@ -17,19 +17,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      paper-material {
-        background-color: white;
-        padding: 30px;
-        margin: 30px 0;
-      }
     </style>
     <iron-ajax 
-      url="/questions.json" 
+      url="/questions.json"
       auto 
       handle-as="json"
       last-response="{{data}}">
     </iron-ajax>
-    <template is="dom-repeat" items="{{data}}">
+    <template is="dom-repeat" items="{{questions}}">
       <paper-material elevation="1">
         <h3>{{item.question}}</h3>
         <p class="paper-font-body1">{{item.answer}}</p>
@@ -42,12 +37,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     Polymer({
       is: 'questions-list',
-
       properties: {
-        foo: {
-          type: String,
-          value: 'questions-list',
-          notify: true
+        isRandom: {
+          type: Boolean
+        },
+        data: {
+          type: Array,
+          value: function(){
+            return [];
+          },
+          observer: '_dataHandler'
+        },
+        questions: {
+          type: Array,
+          value: function(){
+            return [];
+          }
+        }
+      },
+      _dataHandler: function(newVal) {
+        if (this.isRandom) {
+          var aux = [];
+          aux.push(newVal[Math.floor(Math.random() * newVal.length)]);
+          this.questions = aux;
+        } else {
+          this.questions = newVal;
         }
       }
     });
