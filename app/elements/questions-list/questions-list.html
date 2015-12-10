@@ -2,8 +2,7 @@
 
 <dom-module id="questions-list">
   <template>
-
-    <template is="dom-repeat" items="{{questions}}">
+    <template is="dom-repeat" items="{{randomQuestion}}">
       <paper-material elevation="1">
         <h3>{{item.question}}</h3>
         <p class="paper-font-body1">{{item.answer}}</p>
@@ -19,9 +18,23 @@
       properties: {
         questions: {
           type: Array,
-          value: function(){
+          observer: 'getRandom'
+        },
+        isRandom: Boolean,
+        randomQuestion: {
+          type: Array,
+          value: function() {
             return [];
           }
+        }
+      },
+      getRandom: function(newVal) {
+        if (this.isRandom) {
+          var aux = [];
+          aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
+          this.randomQuestion = aux;
+        } else {
+          this.randomQuestion = newVal;
         }
       }
     });
