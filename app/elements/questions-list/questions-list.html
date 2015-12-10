@@ -2,7 +2,7 @@
 
 <dom-module id="questions-list">
   <template>
-    <template is="dom-repeat" items="{{randomQuestion}}">
+    <template is="dom-repeat" items="{{questions}}">
       <paper-material elevation="1">
         <h3>{{item.question}}</h3>
         <p class="paper-font-body1">{{item.answer}}</p>
@@ -16,25 +16,25 @@
     Polymer({
       is: 'questions-list',
       properties: {
-        questions: {
+        data: {
           type: Array,
-          observer: 'getRandom'
+          observer: 'processQuestions'
         },
         isRandom: Boolean,
-        randomQuestion: {
+        questions: {
           type: Array,
           value: function() {
             return [];
           }
         }
       },
-      getRandom: function(newVal) {
+      processQuestions: function(newVal) {
         if (this.isRandom) {
           var aux = [];
           aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
-          this.randomQuestion = aux;
+          this.questions = aux;
         } else {
-          this.randomQuestion = newVal;
+          this.questions = newVal;
         }
       }
     });
