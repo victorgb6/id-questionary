@@ -117,12 +117,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="home">
               <h3><span>Questions List:</span></h3>
-                <questions-list></questions-list>
+                <questions-list questions="[[questions]]"></questions-list>
             </section>
 
             <section data-route="random-question">
               <h3><span>Random Question</span></h3>
-              <questions-list is-random="1"></questions-list>
+              <questions-list  questions="[[questions]]" is-random="1"></questions-list>
             </section>
 
             <section data-route="add-question">
@@ -134,6 +134,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
+
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/questions"
+      data="{{questions}}"
+    ></firebase-collection>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
     <!--
