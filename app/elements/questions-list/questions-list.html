@@ -2,7 +2,6 @@
 
 <dom-module id="questions-list">
   <template>
-
     <template is="dom-repeat" items="{{questions}}">
       <paper-material elevation="1">
         <h3>{{item.question}}</h3>
@@ -17,11 +16,25 @@
     Polymer({
       is: 'questions-list',
       properties: {
+        data: {
+          type: Array,
+          observer: 'processQuestions'
+        },
+        isRandom: Boolean,
         questions: {
           type: Array,
-          value: function(){
+          value: function() {
             return [];
           }
+        }
+      },
+      processQuestions: function(newVal) {
+        if (this.isRandom) {
+          var aux = [];
+          aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
+          this.questions = aux;
+        } else {
+          this.questions = newVal;
         }
       }
     });
