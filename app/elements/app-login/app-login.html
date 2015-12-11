@@ -1,8 +1,19 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
 
 <dom-module id="app-login">
   <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .buttons {
+        margin: 0 -24px -24px -24px;
+      }
+    </style>
+
     <firebase-auth
       id="firebaseLogin"
       location="https://id-questions.firebaseio.com"
@@ -11,8 +22,11 @@
       user="{{user}}"
     ></firebase-auth>
 
-    <h4>You need to be logged to add questions</h4>
-    <paper-button on-tap="login" type="button">Login</paper-button>
+    <h2>You need to be logged to add questions</h2>
+    <p>To be able to add questions you need to  be logged in.</p>
+    <div class="buttons">
+      <paper-button on-tap="login" type="button">Login</paper-button>
+    </div>
   </template>
   <script>
   (function() {
