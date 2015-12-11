@@ -31,13 +31,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'random-question';
     });
 
-    page('/users/:name', scrollToTop, function(data) {
-      app.route = 'user-info';
-      app.params = data.params;
+    page('/add-question', scrollToTop, function() {
+      if (app.isLogged) {
+        app.route = 'add-question';
+      } else {
+        page('/login');
+      }
     });
 
-    page('/add-question', scrollToTop, function() {
-      app.route = 'add-question';
+    page('/login', function() {
+      app.showLogin();
     });
 
     // add #! before urls

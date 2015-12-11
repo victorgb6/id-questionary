@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
+
+<dom-module id="app-login">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .buttons {
+        margin: 0 -24px -24px -24px;
+      }
+    </style>
+
+    <firebase-auth
+      id="firebaseLogin"
+      location="https://id-questions.firebaseio.com"
+      provider="google"
+      status-known="{{statusKnown}}"
+      user="{{user}}"
+    ></firebase-auth>
+
+    <h2>You need to be logged to add questions</h2>
+    <p>To be able to add questions you need to  be logged in.</p>
+    <div class="buttons">
+      <paper-button on-tap="login" type="button">Login</paper-button>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'app-login',
+
+      properties: {
+        user: {
+          type: Object,
+          value: function () {
+            return {};
+          },
+          observer: '_userChanged'
+        },
+        statusKnown: Boolean
+      },
+
+      _userChanged: function (user) {
+        if (user.uid) {
+          app.isLogged = true;
+          page('/add-question');
+        }
+      },
+
+      login: function () {
+        this.$.firebaseLogin.login();
+      }
+    });
+  })();
+  </script>
+</dom-module>
