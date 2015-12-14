@@ -8,8 +8,8 @@
       location="https://id-questions.firebaseio.com/questions/"
       data="{{questions}}"
     ></firebase-collection>
-
-    <template is="dom-repeat" items="[[questions]]">
+    <search-box search="{{searchString}}"></search-box>
+    <template is="dom-repeat" items="[[questions]]" filter="{{searchFilter(searchString)}}">
       <paper-material elevation="1">
         <h3>[[item.question]]</h3>
         <p class="paper-font-body1">[[item.answer]]</p>
@@ -35,9 +35,25 @@
           value: function() {
             return [];
           }
+        },
+        searchString: {
+          type: String,
+          notify: true
         }
       },
-
+      searchFilter: function(string) {
+        if (!string) {
+          return null;
+        } else {
+          string = string.toLowerCase();
+          return function(item) {
+            var question = item.question.toLowerCase();
+            var answer = item.answer.toLowerCase();
+            return (question.indexOf(string) != -1 ||
+                answer.indexOf(string) != -1);
+          };
+        }
+      },
       processQuestions: function(spliceRecord) {
         console.log('record', spliceRecord);
         // if (this.isRandom) {
