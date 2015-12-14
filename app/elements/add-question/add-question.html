@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-tags-input/paper-tags-input.html">
 
 <dom-module id="add-question">
   <template>
@@ -35,6 +36,7 @@
         <div class="card-content">
           <paper-input name="question" label="Question:" required></paper-input>
           <paper-textarea name="answer" label="Answer:" required></paper-textarea>
+          <paper-tags-input tags="{{tagsValues}}" placeholder="Please enter the tag (Press Enter)"></paper-tags-input>
           <input name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
@@ -57,6 +59,16 @@
           value: function () {
             return {};
           }
+        },
+        tagsValues: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        },
+        tags: {
+          type: Object,
+          computed: '_computedTags(tagsValues)'
         }
       },
 
@@ -76,13 +88,27 @@
         this.$.form.submit();
       },
 
+      _computedTags: function (tagsValues) {
+        var obj = {};
+        console.log('TagsValues->',tagsValues);
+        for (var i=0; i < tagsValues.length; i++) {
+          obj[tagsValues[i]] = true;
+        }
+        return obj;
+      },
+
       _handlePresubmit: function (ev) {
-        var form = this.$.form;
+        var data = {},
+        form = this.$.form;
 
         ev.preventDefault();
 
-        this.$.questionsCollection.add(form.serialize());
+        data = form.serialize();
+        data.tags = this.tags;
+
+        this.$.questionsCollection.add(data);
         form.reset();
+        this.tagsValues = [];
       }
     });
   })();

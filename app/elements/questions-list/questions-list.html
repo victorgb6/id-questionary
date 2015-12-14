@@ -13,6 +13,9 @@
       <paper-material elevation="1">
         <h3>[[item.question]]</h3>
         <p class="paper-font-body1">[[item.answer]]</p>
+        <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
+          <span>[[tag]]</span>
+        </template>
       </paper-material>
     </template>
   </template>
@@ -41,6 +44,9 @@
           notify: true
         }
       },
+      keys: function(input) {
+        return Object.keys(input);
+      },
       searchFilter: function(string) {
         if (!string) {
           return null;
@@ -49,8 +55,8 @@
           return function(item) {
             var question = item.question.toLowerCase();
             var answer = item.answer.toLowerCase();
-            return (question.indexOf(string) != -1 ||
-                answer.indexOf(string) != -1);
+            return (question.indexOf(string) !== -1 ||
+                answer.indexOf(string) !== -1);
           };
         }
       },
