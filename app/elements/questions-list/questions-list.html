@@ -1,11 +1,18 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+
 
 <dom-module id="questions-list">
   <template>
-    <template is="dom-repeat" items="{{questions}}">
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/questions/"
+      data="{{questions}}"
+    ></firebase-collection>
+
+    <template is="dom-repeat" items="[[questions]]">
       <paper-material elevation="1">
-        <h3>{{item.question}}</h3>
-        <p class="paper-font-body1">{{item.answer}}</p>
+        <h3>[[item.question]]</h3>
+        <p class="paper-font-body1">[[item.answer]]</p>
       </paper-material>
     </template>
   </template>
@@ -18,7 +25,9 @@
       properties: {
         data: {
           type: Array,
-          observer: 'processQuestions'
+          value: function () {
+            return [];
+          }
         },
         isRandom: Boolean,
         questions: {
@@ -28,14 +37,16 @@
           }
         }
       },
-      processQuestions: function(newVal) {
-        if (this.isRandom) {
-          var aux = [];
-          aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
-          this.questions = aux;
-        } else {
-          this.questions = newVal;
-        }
+
+      processQuestions: function(spliceRecord) {
+        console.log('record', spliceRecord);
+        // if (this.isRandom) {
+        //   var aux = [];
+        //   aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
+        //   this.questions = aux;
+        // } else {
+        //   this.questions = newVal;
+        // }
       }
     });
   })();

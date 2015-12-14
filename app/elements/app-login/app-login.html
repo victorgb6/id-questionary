@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
 
 <dom-module id="app-login">
@@ -9,8 +10,8 @@
         display: block;
       }
 
-      .buttons {
-        margin: 0 -24px -24px -24px;
+      paper-card {
+        display: block;
       }
     </style>
 
@@ -22,11 +23,13 @@
       user="{{user}}"
     ></firebase-auth>
 
-    <h2>You need to be logged to add questions</h2>
-    <p>To be able to add questions you need to  be logged in.</p>
-    <div class="buttons">
-      <paper-button on-tap="login" type="button">Login</paper-button>
-    </div>
+    <paper-card heading="LogIn">
+      <div class="card-content">You need to be logged to add questions</div>
+      <div class="card-actions">
+        <p>{{user.uid}}</p>
+        <paper-button on-tap="login">Login</paper-button>
+      </div>
+    </paper-card>
   </template>
   <script>
   (function() {
@@ -41,16 +44,9 @@
           value: function () {
             return {};
           },
-          observer: '_userChanged'
+          notify: true
         },
         statusKnown: Boolean
-      },
-
-      _userChanged: function (user) {
-        if (user.uid) {
-          app.isLogged = true;
-          page('/add-question');
-        }
       },
 
       login: function () {

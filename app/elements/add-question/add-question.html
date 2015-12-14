@@ -1,8 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <dom-module id="add-question">
   <template>
@@ -10,23 +12,36 @@
       :host {
         display: block;
       }
-      paper-material {
-        position: relative;
-        overflow: hidden;
+
+      paper-card {
+        display: block;
       }
-      paper-button {
-        float: right;
-        margin: 20px 0;
+
+      .card-actions {
+        text-align: right;
       }
     </style>
 
-    <paper-material>
-      <form is="iron-form" id="form" method="post" action="/form/handler">
-        <paper-input label="Question:"></paper-input>
-        <paper-textarea label="Answer:"></paper-textarea>
-        <paper-button>Submit</paper-button>
+    <firebase-collection
+      id="questionsCollection"
+      location="https://id-questions.firebaseio.com/questions"
+      data="{{questions}}"
+    ></firebase-collection>
+
+    <app-login user="{{user}}" hidden$="{{computeLoginHidden(user)}}"></app-login>
+
+    <paper-card heading="Add Question" hidden$="{{computeFormHidden(user)}}">
+      <form id="form" is="iron-form" method="post" action="/form/handler">
+        <div class="card-content">
+          <paper-input name="question" label="Question:" required></paper-input>
+          <paper-textarea name="answer" label="Answer:" required></paper-textarea>
+          <input name="user" type="hidden" value="[[user.uid]]">
+        </div>
+        <div class="card-actions">
+          <paper-button on-tap="submitForm">Submit</paper-button>
+        </div>
       </form>
-    </paper-material>
+    </paper-card>
   </template>
 
   <script>
@@ -37,11 +52,37 @@
       is: 'add-question',
 
       properties: {
-        foo: {
-          type: String,
-          value: 'add-question',
-          notify: true
+        user: {
+          type: Object,
+          value: function () {
+            return {};
+          }
         }
+      },
+
+      listeners: {
+        'iron-form-presubmit': '_handlePresubmit'
+      },
+
+      computeFormHidden: function (user) {
+        return !(!!user && !!user.uid);
+      },
+
+      computeLoginHidden: function (user) {
+        return !!user && !!user.uid;
+      },
+
+      submitForm: function () {
+        this.$.form.submit();
+      },
+
+      _handlePresubmit: function (ev) {
+        var form = this.$.form;
+
+        ev.preventDefault();
+
+        this.$.questionsCollection.add(form.serialize());
+        form.reset();
       }
     });
   })();
