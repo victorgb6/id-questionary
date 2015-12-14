@@ -32,15 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/add-question', scrollToTop, function() {
-      if (app.isLogged) {
-        app.route = 'add-question';
-      } else {
-        page('/login');
-      }
-    });
-
-    page('/login', function() {
-      app.showLogin();
+      app.route = 'add-question';
     });
 
     // add #! before urls
