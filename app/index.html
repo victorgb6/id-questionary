@@ -62,10 +62,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
-    <firebase-document
-      location="https://id-questions.firebaseio.com/questions"
-      data="{{questions}}"
-    ></firebase-document>
 
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
@@ -121,12 +117,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="home">
               <h3><span>Questions List:</span></h3>
-                <questions-list data="[[questions]]"></questions-list>
+                <questions-list questions="[[questions]]"></questions-list>
             </section>
 
             <section data-route="random-question">
               <h3><span>Random Question</span></h3>
-              <questions-list data="[[questions]]" is-random></questions-list>
+              <questions-list questions="[[questions]]" is-random></questions-list>
             </section>
 
             <section data-route="add-question">
