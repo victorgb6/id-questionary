@@ -29,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     page('/random-question', scrollToTop, function() {
       app.route = 'random-question';
+      document.getElementById('randomQuestion').getRandomQuestion();
     });
 
     page('/add-question', scrollToTop, function() {

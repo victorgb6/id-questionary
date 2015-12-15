@@ -44,7 +44,6 @@
           value: function () {
             return [];
           },
-          computed: '_computeRandomQuestion(questions.*)',
         },
         searchString: {
           type: String,
@@ -52,9 +51,11 @@
         },
       },
 
+      observers: ['_computeRandomQuestion(questions.*)'],
+
       _computeRandomQuestion: function (changeRecord) {
         if (changeRecord.path === 'questions.length') {
-          return [ this._getRandomVal(this.questions) ];
+          this.randomQuestion = [ this._getRandomVal(this.questions) ];
         }
       },
 
