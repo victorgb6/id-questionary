@@ -14,7 +14,7 @@
         <h3>[[item.question]]</h3>
         <p class="paper-font-body1">[[item.answer]]</p>
         <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
-          <span>[[tag]]</span>
+          <paper-button raised noink disabled>[[tag]]</paper-button>
         </template>
       </paper-material>
     </template>
@@ -45,7 +45,7 @@
         }
       },
       keys: function(input) {
-        return Object.keys(input);
+          return (typeof input === 'object') ? Object.keys(input) : input;
       },
       searchFilter: function(string) {
         if (!string) {
@@ -55,9 +55,12 @@
           return function(item) {
             var question = item.question.toLowerCase();
             var answer = item.answer.toLowerCase();
+            var tags = this.keys(item.tags) || [];
+            tags = tags.map(Function.prototype.call, String.prototype.toLowerCase);
             return (question.indexOf(string) !== -1 ||
-                answer.indexOf(string) !== -1);
-          };
+                answer.indexOf(string) !== -1) ||
+                tags.indexOf(string) !== -1;
+          }.bind(this);
         }
       },
       processQuestions: function(spliceRecord) {
