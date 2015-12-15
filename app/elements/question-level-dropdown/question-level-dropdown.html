@@ -1,23 +1,29 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <dom-module id="question-level-dropdown">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <div>Hello from <span>{{foo}}</span></div>
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/levels"
+      data="{{levels}}"
+    ></firebase-collection>
+
+    <paper-dropdown-menu
+      name="[[name]]"
+      label="[[label]]"
+      required$="{{_computeBoolProp(required)}}"
+      disabled$="{{_computeBoolProp(disabled)}}"
+      selected-item={{selectedItem}}
+    >
+      <paper-listbox class="dropdown-content">
+        <template is="dom-repeat" items="[[levels]]" as="level">
+          <paper-item value="[[level.__firebaseKey__]]">[[level.value]]</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
   </template>
   <script>
   (function() {
@@ -27,11 +33,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'question-level-dropdown',
 
       properties: {
-        foo: {
-          type: String,
-          value: 'question-level-dropdown',
-          notify: true
+        disabled: {
+          type: Boolean,
+          value: true,
+        },
+        name: String,
+        label: String,
+        levels: {
+          type: Array,
+          value: function () {
+            return [];
+          },
+        },
+        required: Boolean,
+        selectedItem: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+        value: Number
+      },
+
+      observers: [
+        '_levelsChanged(levels.*)',
+        '_selectedItemChanged(selectedItem)'
+      ],
+
+      _levelsChanged: function (changeRecord) {
+        if (changeRecord && changeRecord.path === 'levels.length') {
+          this.disabled = !this.levels.length;
         }
+      },
+
+      _computeBoolProp: function (prop) {
+        return prop;
+      },
+
+      _selectedItemChanged: function (selectedItem) {
+        this.value = selectedItem.value;
       }
     });
   })();
