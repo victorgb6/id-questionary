@@ -1,9 +1,16 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 
 <dom-module id="questions-list">
   <template>
+    <style>
+      paper-card {
+        display: block;
+        margin-bottom: 1rem;
+      }
+    </style>
 
     <firebase-collection
       location="https://id-questions.firebaseio.com/questions/"
@@ -16,10 +23,9 @@
       items$="{{computeQuestions(isRandom, randomQuestion.*, questions.*)}}"
       filter="{{searchFilter(searchString)}}"
     >
-      <paper-material elevation="1">
-        <h3>[[item.question]]</h3>
-        <p class="paper-font-body1">[[item.answer]]</p>
-      </paper-material>
+      <paper-card heading="[[item.question]]">
+        <div class="card-content">[[item.answer]]</div>
+      </paper-card>
     </template>
   </template>
   <script>
