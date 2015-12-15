@@ -5,7 +5,6 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-tags-input/paper-tags-input.html">
 
 <dom-module id="add-question">
   <template>
@@ -34,10 +33,10 @@
     <paper-card heading="Add Question" hidden$="{{computeFormHidden(user)}}">
       <form id="form" is="iron-form" method="post" action="/form/handler">
         <div class="card-content">
-          <paper-input name="question" label="Question:" required></paper-input>
-          <paper-textarea name="answer" label="Answer:" required></paper-textarea>
-          <paper-tags-input tags="{{tagsValues}}" placeholder="Please enter the tag (Press Enter)"></paper-tags-input>
-          <input name="user" type="hidden" value="[[user.uid]]">
+          <paper-input id="question" name="question" label="Question:" required></paper-input>
+          <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
+          <paper-questions-tags-input id="tags"></paper-questions-tags-input>
+          <input id="user" name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
           <paper-button on-tap="submitForm">Submit</paper-button>
@@ -65,10 +64,6 @@
           value: function () {
             return [];
           }
-        },
-        tags: {
-          type: Object,
-          computed: '_computedTags(tagsValues)'
         }
       },
 
@@ -88,7 +83,7 @@
         this.$.form.submit();
       },
 
-      _computedTags: function (tagsValues) {
+      _processTags: function (tagsValues) {
         var obj = {};
         for (var i=0; i < tagsValues.length; i++) {
           obj[tagsValues[i]] = true;
@@ -96,18 +91,23 @@
         return obj;
       },
 
-      _handlePresubmit: function (ev) {
-        var data = {},
-        form = this.$.form;
+      _serialize: function() {
+        var data = {};
+        data.question = this.$.question.value;
+        data.answer = this.$.answer.value;
+        data.tags = this._processTags(this.$.tags.value);
+        data.user = this.$.user.value;
+        return data;
+      },
 
+      _handlePresubmit: function (ev) {
         ev.preventDefault();
 
-        data = form.serialize();
-        data.tags = this.tags;
-
-        this.$.questionsCollection.add(data);
-        form.reset();
-        this.tagsValues = [];
+        this.$.questionsCollection.add(this._serialize());
+        this.$.form.reset();
+        //TODO: This must reset the textarea in a propper way.
+        this.$.answer.value = '';
+        this.$.tags.value = [];
       }
     });
   })();
