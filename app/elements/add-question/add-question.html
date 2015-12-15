@@ -3,8 +3,11 @@
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <dom-module id="add-question">
   <template>
@@ -27,6 +30,10 @@
       location="https://id-questions.firebaseio.com/questions"
       data="{{questions}}"
     ></firebase-collection>
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/levels"
+      data="{{levels}}"
+    ></firebase-collection>
 
     <app-login user="{{user}}" hidden$="{{computeLoginHidden(user)}}"></app-login>
 
@@ -35,6 +42,14 @@
         <div class="card-content">
           <paper-input name="question" label="Question:" required></paper-input>
           <paper-textarea name="answer" label="Answer:" required></paper-textarea>
+          <paper-dropdown-menu name="level" label="Level" required>
+            <paper-listbox class="dropdown-content">
+              <template is="dom-repeat" items="[[levels]]" as="level">
+                <paper-item>[[level.value]]</paper-item>
+              </template>
+            </paper-listbox>
+          </paper-dropdown-menu>
+
           <input name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
