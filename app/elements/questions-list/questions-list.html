@@ -4,12 +4,18 @@
 
 <dom-module id="questions-list">
   <template>
+
     <firebase-collection
       location="https://id-questions.firebaseio.com/questions/"
       data="{{questions}}"
     ></firebase-collection>
+
     <search-box search="{{searchString}}"></search-box>
-    <template is="dom-repeat" items="[[questions]]" filter="{{searchFilter(searchString)}}">
+
+    <template is="dom-repeat"
+      items$="{{computeQuestions(isRandom, randomQuestion.*, questions.*)}}"
+      filter="{{searchFilter(searchString)}}"
+    >
       <paper-material elevation="1">
         <h3>[[item.question]]</h3>
         <p class="paper-font-body1">[[item.answer]]</p>
@@ -23,24 +29,52 @@
     Polymer({
       is: 'questions-list',
       properties: {
-        data: {
-          type: Array,
-          value: function () {
-            return [];
-          }
+        isRandom: {
+          type: Boolean,
+          value: false
         },
-        isRandom: Boolean,
         questions: {
           type: Array,
           value: function() {
             return [];
-          }
+          },
+        },
+        randomQuestion: {
+          type: Array,
+          value: function () {
+            return [];
+          },
         },
         searchString: {
           type: String,
           notify: true
+        },
+      },
+
+      observers: ['_computeRandomQuestion(questions.*)'],
+
+      _computeRandomQuestion: function (changeRecord) {
+        if (changeRecord.path === 'questions.length') {
+          this.randomQuestion = [ this._getRandomVal(this.questions) ];
         }
       },
+
+      _getRandomVal: function (array) {
+        return array[Math.floor(Math.random() * array.length)];
+      },
+
+      getRandomQuestion: function () {
+        this.randomQuestion = [this._getRandomVal(this.questions)];
+      },
+
+      computeQuestions: function (isRandom, randomQuestionChange, questionsChange) {
+        if (isRandom) {
+          return this.randomQuestion;
+        } else {
+          return this.questions;
+        }
+      },
+
       searchFilter: function(string) {
         if (!string) {
           return null;
@@ -50,19 +84,9 @@
             var question = item.question.toLowerCase();
             var answer = item.answer.toLowerCase();
             return (question.indexOf(string) != -1 ||
-                answer.indexOf(string) != -1);
+              answer.indexOf(string) != -1);
           };
         }
-      },
-      processQuestions: function(spliceRecord) {
-        console.log('record', spliceRecord);
-        // if (this.isRandom) {
-        //   var aux = [];
-        //   aux.push(newVal[Math.floor(Math.random()*newVal.length)]);
-        //   this.questions = aux;
-        // } else {
-        //   this.questions = newVal;
-        // }
       }
     });
   })();
