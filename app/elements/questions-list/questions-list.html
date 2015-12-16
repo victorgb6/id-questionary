@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 
@@ -16,6 +17,10 @@
       location="https://id-questions.firebaseio.com/questions/"
       data="{{questions}}"
     ></firebase-collection>
+    <firebase-document
+      location="https://id-questions.firebaseio.com/levels/"
+      data="{{levels}}"
+    ></firebase-document>
 
     <search-box search="{{searchString}}"></search-box>
 
@@ -25,6 +30,7 @@
     >
       <paper-card heading="[[item.question]]">
         <div class="card-content">[[item.answer]]</div>
+        <div class="card-actions">[[_getLevel(levels, item.level)]]</div>
       </paper-card>
     </template>
   </template>
@@ -55,6 +61,12 @@
           type: String,
           notify: true
         },
+        levels: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        }
       },
 
       observers: ['_computeRandomQuestion(questions.*)'],
@@ -67,6 +79,12 @@
 
       _getRandomVal: function (array) {
         return array[Math.floor(Math.random() * array.length)];
+      },
+
+      _getLevel: function (levels, level) {
+        if (Object.keys(levels).length) {
+          return levels[level];
+        }
       },
 
       getRandomQuestion: function () {
