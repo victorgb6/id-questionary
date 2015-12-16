@@ -9,7 +9,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<html lang="">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -50,9 +50,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
 
-  <!-- will be replaced with elements/elements.vulcanized.html -->
+  <!-- Because this project uses vulcanize this should be your only html import
+       in this file. All other imports should go in elements.html -->
   <link rel="import" href="elements/elements.html">
-  <!-- endreplace-->
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
@@ -74,17 +74,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Drawer Content -->
         <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="/" on-tap="onDataRouteClick">
+          <a data-route="home" href="{{baseUrl}}">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
 
-          <a data-route="random-question" href="/random-question" on-tap="onDataRouteClick">
+          <a data-route="random-question" href="{{baseUrl}}random-question">
             <iron-icon icon="av:shuffle"></iron-icon>
             <span>Random Question</span>
           </a>
 
-          <a data-route="add-question" href="/add-question" on-tap="onDataRouteClick">
+          <a data-route="add-question" href="{{baseUrl}}add-question">
             <iron-icon icon="add-box"></iron-icon>
             <span>Add a question</span>
           </a>
@@ -92,12 +92,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
-      <paper-scroll-header-panel main condenses keep-condensed-header>
+      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
 
         <!-- Main Toolbar -->
         <paper-toolbar id="mainToolbar" class="tall">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
+
+          <!-- Toolbar icons -->
+          <paper-icon-button icon="search"></paper-icon-button>
 
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
@@ -133,6 +136,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
     </paper-drawer-panel>
 
+    <paper-toast id="toast">
+      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
+    </paper-toast>
+
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
     <!--
     <paper-toast id="caching-complete"
@@ -143,6 +150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <platinum-sw-register auto-register
                           clients-claim
                           skip-waiting
+                          base-uri="bower_components/platinum-sw/bootstrap"
                           on-service-worker-installed="displayInstalledToast">
       <platinum-sw-cache default-cache-strategy="fastest"
                          cache-config-file="cache-config.json">
