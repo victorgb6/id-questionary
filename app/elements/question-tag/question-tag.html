@@ -1,0 +1,30 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="question-tag">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        font-size: 0.9rem;
+        padding: 0.5em 0.1em;
+      }
+    </style>
+    <paper-button raised noink disabled>[[tag]]</paper-button>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'question-tag',
+
+      properties: {
+        tag: {
+          type: String,
+          value: ''
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>
