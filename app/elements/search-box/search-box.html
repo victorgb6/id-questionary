@@ -1,0 +1,28 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="search-box">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-input label="Search..." value="{{search::input}}"></paper-input>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'search-box',
+
+      properties: {
+        search: {
+          type: String,
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

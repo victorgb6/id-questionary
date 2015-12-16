@@ -1,34 +1,44 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
 
 <dom-module id="questions-list">
   <template>
     <style>
-      :host {
+      paper-card {
         display: block;
+        margin-bottom: 1rem;
       }
     </style>
-    <iron-ajax 
-      url="/questions.json"
-      auto 
-      handle-as="json"
-      last-response="{{data}}">
-    </iron-ajax>
-    <template is="dom-repeat" items="{{questions}}">
-      <paper-material elevation="1">
-        <h3>{{item.question}}</h3>
-        <p class="paper-font-body1">{{item.answer}}</p>
-      </paper-material>
+
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/questions/"
+      data="{{questions}}"
+    ></firebase-collection>
+    <firebase-document
+      location="https://id-questions.firebaseio.com/levels/"
+      data="{{levels}}"
+    ></firebase-document>
+
+    <search-box search="{{searchString}}"></search-box>
+
+    <template is="dom-repeat"
+      items$="{{computeQuestions(isRandom, randomQuestion.*, questions.*)}}"
+      filter="{{searchFilter(searchString)}}"
+    >
+      <paper-card heading="[[item.question]]">
+        <div class="card-content">[[item.answer]]</div>
+        <div class="card-actions">
+          <small>
+            <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
+              <paper-button raised noink disabled>[[tag]]</paper-button>
+            </template>
+            <paper-button raised noink disabled>[[_getLevel(levels, item.level)]]</paper-button>
+          </small>
+        </div>
+      </paper-card>
     </template>
   </template>
   <script>
@@ -39,29 +49,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'questions-list',
       properties: {
         isRandom: {
-          type: Boolean
-        },
-        data: {
-          type: Array,
-          value: function(){
-            return [];
-          },
-          observer: '_dataHandler'
+          type: Boolean,
+          value: false
         },
         questions: {
           type: Array,
-          value: function(){
+          value: function() {
+            return [];
+          },
+        },
+        randomQuestion: {
+          type: Array,
+          value: function () {
+            return [];
+          },
+        },
+        searchString: {
+          type: String,
+          notify: true
+        },
+        levels: {
+          type: Array,
+          value: function () {
             return [];
           }
         }
       },
-      _dataHandler: function(newVal) {
-        if (this.isRandom) {
-          var aux = [];
-          aux.push(newVal[Math.floor(Math.random() * newVal.length)]);
-          this.questions = aux;
+
+      observers: ['_computeRandomQuestion(questions.*)'],
+
+      _computeRandomQuestion: function (changeRecord) {
+        if (changeRecord.path === 'questions.length') {
+          this.randomQuestion = [ this._getRandomVal(this.questions) ];
+        }
+      },
+
+      _getRandomVal: function (array) {
+        return array[Math.floor(Math.random() * array.length)];
+      },
+
+      _getLevel: function (levels, level) {
+        if (Object.keys(levels).length) {
+          return levels[level];
+        }
+      },
+
+      getRandomQuestion: function () {
+        this.randomQuestion = [this._getRandomVal(this.questions)];
+      },
+
+      computeQuestions: function (isRandom, randomQuestionChange, questionsChange) {
+        if (isRandom) {
+          return this.randomQuestion;
         } else {
-          this.questions = newVal;
+          return this.questions;
+        }
+      },
+      keys: function(input) {
+          return (typeof input === 'object') ? Object.keys(input) : input;
+      },
+      searchFilter: function(string) {
+        if (!string) {
+          return null;
+        } else {
+          string = string.toLowerCase();
+          return function(item) {
+            var question = item.question.toLowerCase();
+            var answer = item.answer.toLowerCase();
+            var tags = this.keys(item.tags) || [];
+            tags = tags.map(Function.prototype.call, String.prototype.toLowerCase);
+            return (question.indexOf(string) !== -1 ||
+                answer.indexOf(string) !== -1) ||
+                tags.indexOf(string) !== -1;
+          }.bind(this);
         }
       }
     });

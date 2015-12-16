@@ -1,18 +1,11 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../question-level-dropdown/question-level-dropdown.html">
 
 <dom-module id="add-question">
   <template>
@@ -20,23 +13,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         display: block;
       }
-      paper-material {
-        position: relative;
-        overflow: hidden;
+
+      paper-card {
+        display: block;
       }
-      paper-button {
-        float: right;
-        margin: 20px 0;
+
+      .card-actions {
+        text-align: right;
       }
     </style>
-    <paper-material elevation="1">
-      <form is="iron-form" id="form" method="post" action="/form/handler">
-        <paper-input label="Question:"></paper-input>
-        <paper-textarea label="Answer:"></paper-textarea>
-        <paper-button>Submit</paper-button>
+
+    <firebase-collection
+      id="questionsCollection"
+      location="https://id-questions.firebaseio.com/questions"
+      data="{{questions}}"
+    ></firebase-collection>
+
+    <app-login user="{{user}}" hidden$="{{computeLoginHidden(user)}}"></app-login>
+
+    <paper-card heading="Add Question" hidden$="{{computeFormHidden(user)}}">
+      <form id="form" is="iron-form" method="post" action="/form/handler">
+        <div class="card-content">
+          <paper-input id="question" name="question" label="Question:" required></paper-input>
+          <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
+          <question-tags-input id="tags"></questions-tags-input>
+          <question-level-dropdown
+            name="level" label="Level" required
+          ></question-level-dropdown>
+
+          <input id="user" name="user" type="hidden" value="[[user.uid]]">
+        </div>
+        <div class="card-actions">
+          <paper-button on-tap="submitForm">Submit</paper-button>
+        </div>
       </form>
-    </paper-material>
+    </paper-card>
   </template>
+
   <script>
   (function() {
     'use strict';
@@ -45,11 +58,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'add-question',
 
       properties: {
-        foo: {
-          type: String,
-          value: 'add-question',
-          notify: true
+        user: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+        tagsValues: {
+          type: Array,
+          value: function () {
+            return [];
+          }
         }
+      },
+
+      listeners: {
+        'iron-form-presubmit': '_handlePresubmit'
+      },
+
+      computeFormHidden: function (user) {
+        return !(!!user && !!user.uid);
+      },
+
+      computeLoginHidden: function (user) {
+        return !!user && !!user.uid;
+      },
+
+      submitForm: function () {
+        this.$.form.submit();
+      },
+
+      _processTags: function (tagsValues) {
+        var obj = {};
+        for (var i=0; i < tagsValues.length; i++) {
+          obj[tagsValues[i]] = true;
+        }
+        return obj;
+      },
+
+      _serialize: function() {
+        var data = {};
+        data.question = this.$.question.value;
+        data.answer = this.$.answer.value;
+        data.tags = this._processTags(this.$.tags.value);
+        data.user = this.$.user.value;
+        return data;
+      },
+
+      _handlePresubmit: function (ev) {
+        ev.preventDefault();
+
+        this.$.questionsCollection.add(this._serialize());
+        this.$.form.reset();
+        //TODO: This must reset the textarea in a propper way.
+        this.$.answer.value = '';
+        this.$.tags.value = [];
       }
     });
   })();

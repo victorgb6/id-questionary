@@ -74,17 +74,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Drawer Content -->
         <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="/" on-click="onDataRouteClick">
+          <a data-route="home" href="/" on-tap="onDataRouteClick">
             <iron-icon icon="home"></iron-icon>
             <span>Home</span>
           </a>
 
-          <a data-route="random-question" href="/random-question" on-click="onDataRouteClick">
+          <a data-route="random-question" href="/random-question" on-tap="onDataRouteClick">
             <iron-icon icon="av:shuffle"></iron-icon>
             <span>Random Question</span>
           </a>
 
-          <a data-route="add-question" href="/add-question" on-click="onDataRouteClick">
+          <a data-route="add-question" href="/add-question" on-tap="onDataRouteClick">
             <iron-icon icon="add-box"></iron-icon>
             <span>Add a question</span>
           </a>
@@ -117,19 +117,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="home">
               <h3><span>Questions List:</span></h3>
-                <questions-list></questions-list>
+                <questions-list questions="[[questions]]"></questions-list>
             </section>
 
             <section data-route="random-question">
               <h3><span>Random Question</span></h3>
-              <questions-list is-random="1"></questions-list>
+              <questions-list id="randomQuestion" questions="[[questions]]" is-random></questions-list>
             </section>
 
             <section data-route="add-question">
-              <h3><span>Add a question</span></h3>
               <add-question></add-question>
             </section>
-
           </iron-pages>
         </div>
       </paper-scroll-header-panel>

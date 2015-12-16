@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
+
+<dom-module id="app-login">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+    </style>
+
+    <firebase-auth
+      id="firebaseLogin"
+      location="https://id-questions.firebaseio.com"
+      provider="google"
+      status-known="{{statusKnown}}"
+      user="{{user}}"
+    ></firebase-auth>
+
+    <paper-card heading="Login">
+      <div class="card-content">You need to be logged to add questions</div>
+      <div class="card-actions">
+        <p>{{user.uid}}</p>
+        <paper-button on-tap="login">Login</paper-button>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'app-login',
+
+      properties: {
+        user: {
+          type: Object,
+          value: function () {
+            return {};
+          },
+          notify: true
+        },
+        statusKnown: Boolean
+      },
+
+      login: function () {
+        this.$.firebaseLogin.login();
+      }
+    });
+  })();
+  </script>
+</dom-module>
