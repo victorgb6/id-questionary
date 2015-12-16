@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+
+<dom-module id="question-level-dropdown">
+  <template>
+    <firebase-collection
+      location="https://id-questions.firebaseio.com/levels"
+      data="{{levels}}"
+    ></firebase-collection>
+
+    <paper-dropdown-menu
+      name="[[name]]"
+      label="[[label]]"
+      required$="{{_computeBoolProp(required)}}"
+      disabled$="{{_computeBoolProp(disabled)}}"
+      selected-item={{selectedItem}}
+    >
+      <paper-listbox class="dropdown-content">
+        <template is="dom-repeat" items="[[levels]]" as="level">
+          <paper-item value="[[level.__firebaseKey__]]">[[level.value]]</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'question-level-dropdown',
+
+      properties: {
+        disabled: {
+          type: Boolean,
+          value: true,
+        },
+        name: String,
+        label: String,
+        levels: {
+          type: Array,
+          value: function () {
+            return [];
+          },
+        },
+        required: Boolean,
+        selectedItem: {
+          type: Object,
+          value: function () {
+            return {};
+          }
+        },
+        value: Number
+      },
+
+      observers: [
+        '_levelsChanged(levels.*)',
+        '_selectedItemChanged(selectedItem)'
+      ],
+
+      _levelsChanged: function (changeRecord) {
+        if (changeRecord && changeRecord.path === 'levels.length') {
+          this.disabled = !this.levels.length;
+        }
+      },
+
+      _computeBoolProp: function (prop) {
+        return prop;
+      },
+
+      _selectedItemChanged: function (selectedItem) {
+        this.value = selectedItem.value;
+      }
+    });
+  })();
+  </script>
+</dom-module>

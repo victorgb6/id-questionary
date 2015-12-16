@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../question-level-dropdown/question-level-dropdown.html">
 
 <dom-module id="add-question">
   <template>
@@ -35,7 +36,11 @@
         <div class="card-content">
           <paper-input id="question" name="question" label="Question:" required></paper-input>
           <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
-          <question-tags-input id="tags"></question-tags-input>
+          <question-tags-input id="tags"></questions-tags-input>
+          <question-level-dropdown
+            name="level" label="Level" required
+          ></question-level-dropdown>
+
           <input id="user" name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
