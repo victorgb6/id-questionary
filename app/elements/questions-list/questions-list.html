@@ -98,7 +98,7 @@
         this.randomQuestion = [this._getRandomVal(this.questions)];
       },
 
-      computeQuestions: function (isRandom, randomQuestionChange, questionsChange) {
+      computeQuestions: function (isRandom) {
         if (isRandom) {
           return this.randomQuestion;
         } else {
