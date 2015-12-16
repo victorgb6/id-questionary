@@ -34,13 +34,14 @@
     <paper-card heading="Add Question" hidden$="{{computeFormHidden(user)}}">
       <form id="form" is="iron-form" method="post" action="/form/handler">
         <div class="card-content">
-          <paper-input name="question" label="Question:" required></paper-input>
-          <paper-textarea name="answer" label="Answer:" required></paper-textarea>
+          <paper-input id="question" name="question" label="Question:" required></paper-input>
+          <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
+          <questions-tags-input id="tags"></questions-tags-input>
           <question-level-dropdown
             name="level" label="Level" required
           ></question-level-dropdown>
 
-          <input name="user" type="hidden" value="[[user.uid]]">
+          <input id="user" name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
           <paper-button on-tap="submitForm">Submit</paper-button>
@@ -62,6 +63,12 @@
           value: function () {
             return {};
           }
+        },
+        tagsValues: {
+          type: Array,
+          value: function () {
+            return [];
+          }
         }
       },
 
@@ -81,13 +88,31 @@
         this.$.form.submit();
       },
 
-      _handlePresubmit: function (ev) {
-        var form = this.$.form;
+      _processTags: function (tagsValues) {
+        var obj = {};
+        for (var i=0; i < tagsValues.length; i++) {
+          obj[tagsValues[i]] = true;
+        }
+        return obj;
+      },
 
+      _serialize: function() {
+        var data = {};
+        data.question = this.$.question.value;
+        data.answer = this.$.answer.value;
+        data.tags = this._processTags(this.$.tags.value);
+        data.user = this.$.user.value;
+        return data;
+      },
+
+      _handlePresubmit: function (ev) {
         ev.preventDefault();
 
-        this.$.questionsCollection.add(form.serialize());
-        form.reset();
+        this.$.questionsCollection.add(this._serialize());
+        this.$.form.reset();
+        //TODO: This must reset the textarea in a propper way.
+        this.$.answer.value = '';
+        this.$.tags.value = [];
       }
     });
   })();

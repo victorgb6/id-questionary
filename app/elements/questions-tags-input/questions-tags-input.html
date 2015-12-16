@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-tags-input/paper-tags-input.html">
+
+<dom-module id="paper-questions-tags-input">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-tags-input tags="{{value}}" placeholder="Please enter the tag (Press Enter)"></paper-tags-input>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'paper-questions-tags-input',
+
+      properties: {
+        value: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>
