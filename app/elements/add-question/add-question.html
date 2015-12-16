@@ -36,9 +36,9 @@
         <div class="card-content">
           <paper-input id="question" name="question" label="Question:" required></paper-input>
           <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
-          <question-tags-input id="tags"></questions-tags-input>
+          <question-tags-input id="tags"></question-tags-input>
           <question-level-dropdown
-            name="level" label="Level" required
+            id="level" name="level" label="Level" required
           ></question-level-dropdown>
 
           <input id="user" name="user" type="hidden" value="[[user.uid]]">
@@ -101,6 +101,7 @@
         data.question = this.$.question.value;
         data.answer = this.$.answer.value;
         data.tags = this._processTags(this.$.tags.value);
+        data.level = this.$.level.value;
         data.user = this.$.user.value;
         return data;
       },
