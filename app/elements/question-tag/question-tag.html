@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <dom-module id="question-tag">
   <template>
@@ -9,7 +10,9 @@
         padding: 0.5em 0.1em;
       }
     </style>
-    <paper-button raised noink disabled>[[tag]]</paper-button>
+    <paper-button raised noink disabled>
+      <content></content>
+    </paper-button>
   </template>
   <script>
   (function() {
@@ -17,13 +20,6 @@
 
     Polymer({
       is: 'question-tag',
-
-      properties: {
-        tag: {
-          type: String,
-          value: ''
-        }
-      }
     });
   })();
   </script>

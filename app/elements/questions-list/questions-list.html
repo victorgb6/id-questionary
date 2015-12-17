@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../question-tag/question-tag.html">
 
 
 <dom-module id="questions-list">
@@ -32,9 +33,9 @@
         <div class="card-content">[[item.answer]]</div>
         <div class="card-actions">
           <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
-            <question-tag tag="[[tag]]"></question-tag>
+            <question-tag>[[tag]]</question-tag>
           </template>
-          <question-tag tag="[[_getLevel(levels, item.level)]]"></question-tag>
+          <question-tag>[[_getLevel(levels, item.level)]]</question-tag>
         </div>
       </paper-card>
     </template>
