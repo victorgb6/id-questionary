@@ -5,9 +5,25 @@
     <style>
       :host {
         display: block;
+        width: 100%;
+        --paper-input-container-color: var(--text-primary-color);
+        overflow: hidden;
+      }
+      paper-input {
+        width: 90%;
+        float: left;
+      }
+      paper-input input {
+        color: var(--text-primary-color);
+      }
+      paper-icon-button {
+        float: right;
+        height: 60px;
       }
     </style>
-    <paper-input label="Search..." value="{{search::input}}"></paper-input>
+    <paper-input hidden$="{{enabled}}" label="Search..." value="{{search::input}}"></paper-input>
+    <paper-icon-button icon="search" hidden$="{{!enabled}}" on-tap="toggleEnabled"></paper-icon-button>
+    <paper-icon-button icon="cancel" hidden$="{{enabled}}" on-tap="toggleEnabled"></paper-icon-button>
   </template>
   <script>
   (function() {
@@ -17,10 +33,18 @@
       is: 'search-box',
 
       properties: {
+        enabled: {
+          type: Boolean,
+          value: true
+        },
         search: {
           type: String,
           notify: true
         }
+      },
+
+      toggleEnabled: function(e) {
+        this.enabled = !this.enabled;
       }
     });
   })();
