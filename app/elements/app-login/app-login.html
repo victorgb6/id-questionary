@@ -21,6 +21,7 @@
       provider="google"
       status-known="{{statusKnown}}"
       user="{{user}}"
+      on-login="_onFirebaseLogin"
     ></firebase-auth>
 
     <paper-card heading="Login">
@@ -44,9 +45,21 @@
           value: function () {
             return {};
           },
-          notify: true
+          notify: true,
         },
         statusKnown: Boolean
+      },
+
+      _serializeUser: function(e) {
+        var data = {};
+          data.name = e.detail.user.google.displayName;
+          data.provider = e.detail.user.provider;
+        return data;
+      },
+
+      _onFirebaseLogin: function(e) {
+        var ref = new Firebase('https://id-questions.firebaseio.com/users/' + e.detail.user.uid);
+        ref.set(this._serializeUser(e));
       },
 
       login: function () {
