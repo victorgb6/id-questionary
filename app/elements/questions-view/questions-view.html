@@ -25,7 +25,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <h3><span>Questions List:</span></h3>
             <questions-list questions="[[questions]]"
                             levels="[[levels]]"
-                            user="[[user]]"></questions-list>
+                            auth="{{auth}}"
+                            user="{{user}}"></questions-list>
         </section>
 
         <section data-route="random-question">
@@ -33,7 +34,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <questions-list id="randomQuestion"
                           questions="[[questions]]"
                           levels="[[levels]]"
-                          user="[[user]]"
+                          user="{{user}}"
+                          auth="{{auth}}"
                           is-random></questions-list>
         </section>
 
@@ -58,6 +60,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         levels: Array,
 
         user: {
+          notify: true
+        },
+        auth: {
           notify: true
         }
       },

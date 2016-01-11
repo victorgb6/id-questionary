@@ -68,9 +68,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-scroll-header-panel drawer fixed>
 
         <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
-          <user-profile user="{{user}}"></user-profile>
+        <paper-toolbar id="drawerToolbar" class="medium-tall">
+          <div class="top">
+            <span class="paper-font-title">Menu</span>
+          </div>
+          <div class="middle">
+            <user-profile user="{{user}}"
+                          on-sign-out="signOut">
+            </user-profile>
+          </div>
+
         </paper-toolbar>
 
         <!-- Drawer Content -->
@@ -118,10 +125,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Application auth -->
         <app-login id="auth"
                    user="{{user}}"
+                   auth="{{auth}}"
                    location="[[firebaseURL]]">
         </app-login>
         <!-- Application data -->
         <questions-data user="{{user}}"
+                        auth="{{auth}}"
                         location="[[firebaseURL]]"
                         questions="{{questions}}"
                         levels="{{levels}}">
@@ -130,6 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Main Content -->
         <questions-view route="{{route}}"
                         user="{{user}}"
+                        auth="{{auth}}"
                         location="[[firebaseURL]]"
                         questions="{{questions}}"
                         levels="{{levels}}">

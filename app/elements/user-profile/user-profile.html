@@ -17,7 +17,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    <div>
+    <div on-tap="signOut">
+      <iron-icon icon="account-circle"></iron-icon>
       {{user.google.displayName}}
     </div>
   </template>
@@ -30,7 +31,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       properties: {
 
-      }
+      },
+
+      signOut: function() {
+        this.fire('sign-out');
+      },
     });
   })();
   </script>

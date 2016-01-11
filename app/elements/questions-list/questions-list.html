@@ -19,8 +19,8 @@
       filter="{{searchFilter(searchString)}}"
     >
       <paper-card heading="[[item.question]]">
-        <div class="card-content" hidden$="{{computeAdmin(user)}}">[[item.answer]]</div>
-        <div class="card-actions" hidden$="{{computeAdmin(user)}}">
+        <div class="card-content" hidden$="[[computeAdmin(user, auth)]]">[[item.answer]]</div>
+        <div class="card-actions" hidden$="[[computeAdmin(user, auth)]]">
           <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
             <question-tag>[[tag]]</question-tag>
           </template>
@@ -67,8 +67,9 @@
         }
       },
 
-      computeAdmin: function(user) {
-        return !(!!user.isAdmin);
+      computeAdmin: function(user, auth) {
+        console.log('user-isAdmin->',auth);
+        return !(!!auth && !!user && !!user.admin);
       },
 
       _getRandomVal: function (array) {

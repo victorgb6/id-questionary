@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
@@ -47,16 +49,11 @@
       location="{{location}}"
       provider="google"
       ref="{{refauth}}"
-      user="{{user}}"
+      user="{{auth}}"
     ></firebase-auth>
 
-    <firebase-document
-      location="{{adminsLocation}}"
-      data="{{admins}}"
-    ></firebase-document>
-
     <paper-dialog modal
-                  opened="{{!user}}"
+                  opened="{{!auth}}"
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation">
       <h2>Oh hai! Please sign in</h2>
@@ -78,39 +75,38 @@
       is: 'app-login',
 
       properties: {
-        user: {
+        auth: {
           notify: true,
           observer: '_userChanged'
+        },
+        user: {
+          notify: true,
         },
         location: {
           observer: '_locationChanged'
         },
         admins: {
-          notify: true,
           observer: '_adminsReady'
+        },
+        isAdmin: {
+          notify: true
         }
       },
 
       _userChanged: function(user) {
-        if (user) {
-          this.userLocation = [this.location, 'users', this.user.uid].join('/');
-          var usersRef = new Firebase(this.userLocation);
-          usersRef.set(user);
-
-        }
-      },
-
-      _adminsReady: function(admins) {
-        this.user.isAdmin = false;
-        for (var key in this.admins) {
-          if (this.admins.hasOwnProperty(key)) {
-              this.user.isAdmin = (key === this.user.uid);
-          }
+        if (this.auth) {
+          var users = new Firebase([this.location,'users'].join('/'));
+          var userRef = users.child(this.auth.uid);
+          var self = this;
+          userRef.update(this.auth);
+          userRef.once("value", function(snap) {
+            self.user = snap.val();
+          });
         }
       },
 
       _locationChanged: function(location) {
-        this.adminsLocation = location + '/admins';
+        this.usersLocation = location + '/users';
       },
 
       signIn: function () {
@@ -118,8 +114,10 @@
       },
 
       signOut: function() {
+
         this.$.firebaseLogin.logout();
         this.user = null;
+        this.auth = null;
       }
     });
   })();

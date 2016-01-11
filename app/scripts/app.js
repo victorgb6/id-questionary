@@ -26,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.firebaseURL = 'https://id-questions.firebaseio.com';
 
   app.signOut = function() {
-    this.$.firebaseLogin.signOut();
+    this.$.auth.signOut();
   };
 
   app.displayInstalledToast = function() {
