@@ -30,9 +30,8 @@
       data="{{questions}}"
     ></firebase-collection>
 
-    <app-login user="{{user}}" hidden$="{{computeLoginHidden(user)}}"></app-login>
 
-    <paper-card heading="Add Question" hidden$="{{computeFormHidden(user)}}">
+    <paper-card heading="Add Question" hidden$="{{computeHidden(user)}}">
       <form id="form" is="iron-form" method="post" action="/form/handler">
         <div class="card-content">
           <paper-input id="question" name="question" label="Question:" required></paper-input>
@@ -60,10 +59,7 @@
 
       properties: {
         user: {
-          type: Object,
-          value: function () {
-            return {};
-          }
+          notify: true
         },
         tagsValues: {
           type: Array,
@@ -77,12 +73,8 @@
         'iron-form-presubmit': '_handlePresubmit'
       },
 
-      computeFormHidden: function (user) {
+      computeHidden: function (user) {
         return !(!!user && !!user.uid);
-      },
-
-      computeLoginHidden: function (user) {
-        return !!user && !!user.uid;
       },
 
       submitForm: function () {

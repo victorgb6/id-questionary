@@ -70,6 +70,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Drawer Toolbar -->
         <paper-toolbar id="drawerToolbar">
           <span class="paper-font-title">Menu</span>
+          <user-profile user="{{user}}"></user-profile>
         </paper-toolbar>
 
         <!-- Drawer Content -->
@@ -114,25 +115,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         </paper-toolbar>
 
+        <!-- Application auth -->
+        <app-login id="auth"
+                   user="{{user}}"
+                   location="[[firebaseURL]]">
+        </app-login>
+        <!-- Application data -->
+        <questions-data user="{{user}}"
+                        location="[[firebaseURL]]"
+                        questions="{{questions}}"
+                        levels="{{levels}}">
+        </questions-data>
+
         <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+        <questions-view route="{{route}}"
+                        user="{{user}}"
+                        location="[[firebaseURL]]"
+                        questions="{{questions}}"
+                        levels="{{levels}}">
+        </questions-view>
 
-            <section data-route="home">
-              <h3><span>Questions List:</span></h3>
-                <questions-list questions="[[questions]]"></questions-list>
-            </section>
-
-            <section data-route="random-question">
-              <h3><span>Random Question</span></h3>
-              <questions-list id="randomQuestion" questions="[[questions]]" is-random></questions-list>
-            </section>
-
-            <section data-route="add-question">
-              <add-question></add-question>
-            </section>
-          </iron-pages>
-        </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
 

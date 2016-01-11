@@ -1,6 +1,4 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
-<link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../question-tag/question-tag.html">
 
@@ -14,15 +12,6 @@
       }
     </style>
 
-    <firebase-collection
-      location="https://id-questions.firebaseio.com/questions/"
-      data="{{questions}}"
-    ></firebase-collection>
-    <firebase-document
-      location="https://id-questions.firebaseio.com/levels/"
-      data="{{levels}}"
-    ></firebase-document>
-
     <search-box search="{{searchString}}"></search-box>
 
     <template is="dom-repeat"
@@ -30,8 +19,8 @@
       filter="{{searchFilter(searchString)}}"
     >
       <paper-card heading="[[item.question]]">
-        <div class="card-content">[[item.answer]]</div>
-        <div class="card-actions">
+        <div class="card-content" hidden$="{{computeAdmin(user)}}">[[item.answer]]</div>
+        <div class="card-actions" hidden$="{{computeAdmin(user)}}">
           <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
             <question-tag>[[tag]]</question-tag>
           </template>
@@ -67,12 +56,7 @@
           type: String,
           notify: true
         },
-        levels: {
-          type: Array,
-          value: function () {
-            return [];
-          }
-        }
+        levels: Array
       },
 
       observers: ['_computeRandomQuestion(questions.*)'],
@@ -81,6 +65,10 @@
         if (changeRecord.path === 'questions.length') {
           this.randomQuestion = [ this._getRandomVal(this.questions) ];
         }
+      },
+
+      computeAdmin: function(user) {
+        return !(!!user.isAdmin);
       },
 
       _getRandomVal: function (array) {

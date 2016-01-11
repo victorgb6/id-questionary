@@ -23,6 +23,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // app.baseUrl = '/polymer-starter-kit/';
   }
 
+  app.firebaseURL = 'https://id-questions.firebaseio.com';
+
+  app.signOut = function() {
+    this.$.firebaseLogin.signOut();
+  };
+
   app.displayInstalledToast = function() {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
     if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {

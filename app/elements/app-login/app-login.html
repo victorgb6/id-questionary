@@ -1,36 +1,74 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/firebase-element/firebase-auth.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../../bower_components/firebase-element/firebase-document.html">
 
 <dom-module id="app-login">
   <template>
     <style>
-      :host {
-        display: block;
+      paper-dialog {
+        padding: 32px;
       }
-
-      paper-card {
-        display: block;
+      .google-sign-in {
+        display: inline-block;
+        background: #4285f4;
+        color: white;
+        width: 190px;
+        border-radius: 5px;
+        white-space: nowrap;
+      }
+      .google-sign-in:hover {
+        cursor: pointer;
+      }
+      .google-sign-in-icon {
+        background: url('/images/google-sign-in/g-normal.png') transparent 5px 50% no-repeat;
+        display: inline-block;
+        vertical-align: middle;
+        width: 42px;
+        height: 42px;
+        border-right: #2265d4 1px solid;
+      }
+      .google-sign-in-label {
+        display: inline-block;
+        vertical-align: middle;
+        padding-left: 42px;
+        padding-right: 42px;
+        font-size: 14px;
+        font-weight: bold;
+        /* Use the Roboto font that is loaded in the <head> */
+        font-family: 'Roboto', sans-serif;
       }
     </style>
 
     <firebase-auth
       id="firebaseLogin"
-      location="https://id-questions.firebaseio.com"
+      location="{{location}}"
       provider="google"
-      status-known="{{statusKnown}}"
+      ref="{{refauth}}"
       user="{{user}}"
-      on-login="_onFirebaseLogin"
     ></firebase-auth>
 
-    <paper-card heading="Login">
-      <div class="card-content">You need to be logged to add questions</div>
-      <div class="card-actions">
-        <p>{{user.uid}}</p>
-        <paper-button on-tap="login">Login</paper-button>
+    <firebase-document
+      location="{{adminsLocation}}"
+      data="{{admins}}"
+    ></firebase-document>
+
+    <paper-dialog modal
+                  opened="{{!user}}"
+                  entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation">
+      <h2>Oh hai! Please sign in</h2>
+      <div>
+        <div class="google-sign-in"
+             tabindex="0"
+             on-tap="signIn">
+          <span class="google-sign-in-icon"></span>
+          <span class="google-sign-in-label">Google</span>
+        </div>
       </div>
-    </paper-card>
+    </paper-dialog>
   </template>
   <script>
   (function() {
@@ -41,29 +79,47 @@
 
       properties: {
         user: {
-          type: Object,
-          value: function () {
-            return {};
-          },
-          notify: true
+          notify: true,
+          observer: '_userChanged'
         },
-        statusKnown: Boolean
+        location: {
+          observer: '_locationChanged'
+        },
+        admins: {
+          notify: true,
+          observer: '_adminsReady'
+        }
       },
 
-      _serializeUser: function(e) {
-        var data = {};
-          data.name = e.detail.user.google.displayName;
-          data.provider = e.detail.user.provider;
-        return data;
+      _userChanged: function(user) {
+        if (user) {
+          this.userLocation = [this.location, 'users', this.user.uid].join('/');
+          var usersRef = new Firebase(this.userLocation);
+          usersRef.set(user);
+
+        }
       },
 
-      _onFirebaseLogin: function(e) {
-        var ref = new Firebase('https://id-questions.firebaseio.com/users/' + e.detail.user.uid);
-        ref.set(this._serializeUser(e));
+      _adminsReady: function(admins) {
+        this.user.isAdmin = false;
+        for (var key in this.admins) {
+          if (this.admins.hasOwnProperty(key)) {
+              this.user.isAdmin = (key === this.user.uid);
+          }
+        }
       },
 
-      login: function () {
+      _locationChanged: function(location) {
+        this.adminsLocation = location + '/admins';
+      },
+
+      signIn: function () {
         this.$.firebaseLogin.login();
+      },
+
+      signOut: function() {
+        this.$.firebaseLogin.logout();
+        this.user = null;
       }
     });
   })();
