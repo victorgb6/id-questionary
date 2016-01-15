@@ -6,10 +6,6 @@
 
 <dom-module id="question-level-dropdown">
   <template>
-    <firebase-collection
-      location="https://id-questions.firebaseio.com/levels"
-      data="{{levels}}"
-    ></firebase-collection>
 
     <paper-dropdown-menu
       name="[[name]]"
@@ -20,7 +16,7 @@
     >
       <paper-listbox class="dropdown-content">
         <template is="dom-repeat" items="[[levels]]" as="level">
-          <paper-item value="[[level.__firebaseKey__]]">[[level.value]]</paper-item>
+          <paper-item value="[[index]]">[[level]]</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -41,14 +37,14 @@
         label: String,
         levels: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
-          },
+          }
         },
         required: Boolean,
         selectedItem: {
           type: Object,
-          value: function () {
+          value: function() {
             return {};
           }
         },
@@ -60,18 +56,20 @@
         '_selectedItemChanged(selectedItem)'
       ],
 
-      _levelsChanged: function (changeRecord) {
-        if (changeRecord && changeRecord.path === 'levels.length') {
+      _levelsChanged: function(changeRecord) {
+        if (changeRecord && changeRecord.path === 'levels') {
           this.disabled = !this.levels.length;
         }
       },
 
-      _computeBoolProp: function (prop) {
+      _computeBoolProp: function(prop) {
         return prop;
       },
 
-      _selectedItemChanged: function (selectedItem) {
-        this.value = selectedItem.value;
+      _selectedItemChanged: function(selectedItem) {
+        if (selectedItem) {
+          this.value = selectedItem.value;
+        }
       }
     });
   })();

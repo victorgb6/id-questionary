@@ -24,12 +24,6 @@
       }
     </style>
 
-    <firebase-collection
-      id="questionsCollection"
-      location="https://id-questions.firebaseio.com/questions"
-      data="{{questions}}"
-    ></firebase-collection>
-
 
     <paper-card heading="Add Question" hidden$="{{computeHidden(user)}}">
       <form id="form" is="iron-form" method="post" action="/form/handler">
@@ -38,10 +32,13 @@
           <paper-textarea id="answer" name="answer" label="Answer:" required></paper-textarea>
           <question-tags-input id="tags"></question-tags-input>
           <question-level-dropdown
-            id="level" name="level" label="Level" required
+            id="level"
+            name="level"
+            label="Level"
+            levels="[[levels]]"
+            required
           ></question-level-dropdown>
 
-          <input id="user" name="user" type="hidden" value="[[user.uid]]">
         </div>
         <div class="card-actions">
           <paper-button on-tap="submitForm">Submit</paper-button>
@@ -61,9 +58,16 @@
         user: {
           notify: true
         },
+        questions: {
+          notify: true
+        },
+        answers: {
+          notify: true
+        },
+        levels: Array,
         tagsValues: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           }
         }
@@ -73,15 +77,15 @@
         'iron-form-presubmit': '_handlePresubmit'
       },
 
-      computeHidden: function (user) {
+      computeHidden: function(user) {
         return !(!!user && !!user.uid);
       },
 
-      submitForm: function () {
+      submitForm: function() {
         this.$.form.submit();
       },
 
-      _processTags: function (tagsValues) {
+      _processTags: function(tagsValues) {
         var obj = {};
         for (var i=0; i < tagsValues.length; i++) {
           obj[tagsValues[i]] = true;
@@ -89,20 +93,26 @@
         return obj;
       },
 
-      _serialize: function() {
+      _serializeQuestion: function() {
         var data = {};
         data.question = this.$.question.value;
-        data.answer = this.$.answer.value;
-        data.tags = this._processTags(this.$.tags.value);
-        data.level = this.$.level.value;
-        data.user = this.$.user.value;
         return data;
       },
 
-      _handlePresubmit: function (ev) {
-        ev.preventDefault();
+      _serializeAnswer: function() {
+        var data = {};
+        data.answer = this.$.answer.value;
+        data.tags = this._processTags(this.$.tags.value);
+        data.level = this.$.level.value;
+        data.user = this.user.uid;
+        return data;
+      },
 
-        this.$.questionsCollection.add(this._serialize());
+      _handlePresubmit: function(ev) {
+        ev.preventDefault();
+        this.push('questions',this._serializeQuestion());
+        this.push('answers',this._serializeAnswer());
+
         this.$.form.reset();
         //TODO: This must reset the textarea in a propper way.
         this.$.answer.value = '';

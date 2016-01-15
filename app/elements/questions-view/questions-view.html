@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
       :host {
         display: block;
-        padding: 0 30px;
+        padding: 30px 30px 0;
       }
     </style>
     <div class="content" hidden$="{{computeHidden(user)}}">
@@ -24,8 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <section data-route="home">
           <h3><span>Questions List:</span></h3>
             <questions-list questions="[[questions]]"
+                            answers="[[answers]]"
                             levels="[[levels]]"
-                            auth="{{auth}}"
                             user="{{user}}"></questions-list>
         </section>
 
@@ -33,14 +33,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <h3><span>Random Question</span></h3>
           <questions-list id="randomQuestion"
                           questions="[[questions]]"
+                          answers="[[answers]]"
                           levels="[[levels]]"
                           user="{{user}}"
-                          auth="{{auth}}"
                           is-random></questions-list>
         </section>
 
         <section data-route="add-question">
-          <add-question></add-question>
+          <add-question questions="{{questions}}"
+                        answers="{{answers}}"
+                        user="{{user}}"
+                        levels="[[levels]]"
+                        ></add-question>
         </section>
       </iron-pages>
     </div>
@@ -57,12 +61,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         questions: Array,
 
+        answers: Array,
+
         levels: Array,
 
         user: {
-          notify: true
-        },
-        auth: {
           notify: true
         }
       },
@@ -71,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.fire('sign-out');
       },
 
-      computeHidden: function (user) {
+      computeHidden: function(user) {
         return !(!!user && !!user.uid);
       }
 

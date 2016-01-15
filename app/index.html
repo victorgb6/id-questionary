@@ -107,9 +107,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
 
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="search"></paper-icon-button>
-
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
             <div class="app-name">Interface Developer Questions Set</div>
@@ -125,23 +122,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Application auth -->
         <app-login id="auth"
                    user="{{user}}"
-                   auth="{{auth}}"
-                   location="[[firebaseURL]]">
+                   location="[[firebaseURL]]"
+                   answers-location="{{answersLocation}}">
         </app-login>
+
         <!-- Application data -->
         <questions-data user="{{user}}"
-                        auth="{{auth}}"
                         location="[[firebaseURL]]"
+                        answers-location="{{answersLocation}}"
                         questions="{{questions}}"
+                        answers="{{answers}}"
                         levels="{{levels}}">
         </questions-data>
 
         <!-- Main Content -->
         <questions-view route="{{route}}"
                         user="{{user}}"
-                        auth="{{auth}}"
                         location="[[firebaseURL]]"
                         questions="{{questions}}"
+                        answers="{{answers}}"
                         levels="{{levels}}">
         </questions-view>
 

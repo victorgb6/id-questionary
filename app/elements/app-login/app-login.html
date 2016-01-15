@@ -49,11 +49,13 @@
       location="{{location}}"
       provider="google"
       ref="{{refauth}}"
-      user="{{auth}}"
+      statusKnown="true"
+      user="{{user}}"
+      on-login="onSuccess"
     ></firebase-auth>
 
     <paper-dialog modal
-                  opened="{{!auth}}"
+                  opened="{{!user}}"
                   entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation">
       <h2>Oh hai! Please sign in</h2>
@@ -75,49 +77,25 @@
       is: 'app-login',
 
       properties: {
-        auth: {
-          notify: true,
-          observer: '_userChanged'
-        },
         user: {
-          notify: true,
+          notify: true
         },
-        location: {
-          observer: '_locationChanged'
-        },
-        admins: {
-          observer: '_adminsReady'
-        },
-        isAdmin: {
+        answersLocation: {
           notify: true
         }
       },
 
-      _userChanged: function(user) {
-        if (this.auth) {
-          var users = new Firebase([this.location,'users'].join('/'));
-          var userRef = users.child(this.auth.uid);
-          var self = this;
-          userRef.update(this.auth);
-          userRef.once("value", function(snap) {
-            self.user = snap.val();
-          });
-        }
+      onSuccess: function() {
+        this.answersLocation = this.location + '/answers';
       },
 
-      _locationChanged: function(location) {
-        this.usersLocation = location + '/users';
-      },
-
-      signIn: function () {
+      signIn: function() {
         this.$.firebaseLogin.login();
       },
 
       signOut: function() {
-
         this.$.firebaseLogin.logout();
         this.user = null;
-        this.auth = null;
       }
     });
   })();

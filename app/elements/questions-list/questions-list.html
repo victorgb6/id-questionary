@@ -10,17 +10,23 @@
         display: block;
         margin-bottom: 1rem;
       }
+      h3 {
+        margin-bottom: 0;
+      }
+      search-box {
+        padding: 0 0 25px 0;
+      }
     </style>
 
     <search-box search="{{searchString}}"></search-box>
 
     <template is="dom-repeat"
-      items$="{{computeQuestions(isRandom, randomQuestion.*, questions.*)}}"
+      items$="[[computeQuestions(isRandom, randomQuestion.*, questions.*, answers.*)]]"
       filter="{{searchFilter(searchString)}}"
     >
       <paper-card heading="[[item.question]]">
-        <div class="card-content" hidden$="[[computeAdmin(user, auth)]]">[[item.answer]]</div>
-        <div class="card-actions" hidden$="[[computeAdmin(user, auth)]]">
+        <div class="card-content" hidden$="[[!item.answer]]">[[item.answer]]</div>
+        <div class="card-actions" hidden$="[[!item.tags]]">
           <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
             <question-tag>[[tag]]</question-tag>
           </template>
@@ -40,15 +46,12 @@
           type: Boolean,
           value: false
         },
-        questions: {
-          type: Array,
-          value: function() {
-            return [];
-          },
-        },
+        questions: Array,
+        answers: Array,
+        questionsSet: Array,
         randomQuestion: {
           type: Array,
-          value: function () {
+          value: function() {
             return [];
           },
         },
@@ -61,36 +64,49 @@
 
       observers: ['_computeRandomQuestion(questions.*)'],
 
-      _computeRandomQuestion: function (changeRecord) {
+      _computeRandomQuestion: function(changeRecord) {
         if (changeRecord.path === 'questions.length') {
           this.randomQuestion = [ this._getRandomVal(this.questions) ];
         }
       },
 
-      computeAdmin: function(user, auth) {
-        console.log('user-isAdmin->',auth);
-        return !(!!auth && !!user && !!user.admin);
-      },
-
-      _getRandomVal: function (array) {
+      _getRandomVal: function(array) {
         return array[Math.floor(Math.random() * array.length)];
       },
 
-      _getLevel: function (levels, level) {
+      _getLevel: function(levels, level) {
         if (Object.keys(levels).length) {
           return levels[level];
         }
       },
 
-      getRandomQuestion: function () {
+      getRandomQuestion: function() {
         this.randomQuestion = [this._getRandomVal(this.questions)];
       },
 
-      computeQuestions: function (isRandom) {
+      computeQuestions: function(isRandom, randomQuestion, questions, answers) {
         if (isRandom) {
           return this.randomQuestion;
         } else {
-          return this.questions;
+          //Merge both arrays in one
+          this.computedQuestions = [];
+
+          for (var i=0; i < this.questions.length; i++) {
+            this.computedQuestions[i] = {};
+            for (var key in this.questions[i]) {
+              if (key !== '__firebaseKey__') {
+                this.computedQuestions[i][key] = this.questions[i][key];
+              }
+            }
+          };
+          for (var i=0; i < this.answers.length; i++) {
+            for (var key in this.answers[i]) {
+              if (key !== '__firebaseKey__') {
+                this.computedQuestions[i][key] = this.answers[i][key];
+              }
+            }
+          }
+          return this.computedQuestions;
         }
       },
       keys: function(input) {
@@ -102,12 +118,12 @@
         } else {
           string = string.toLowerCase();
           return function(item) {
-            var question = item.question.toLowerCase();
-            var answer = item.answer.toLowerCase();
+            var question = item.question || '';
+            var answer = item.answer || '';
             var tags = this.keys(item.tags) || [];
             tags = tags.map(Function.prototype.call, String.prototype.toLowerCase);
-            return (question.indexOf(string) !== -1 ||
-                answer.indexOf(string) !== -1) ||
+            return (question.toLowerCase().indexOf(string) !== -1 ||
+                answer.toLowerCase().indexOf(string) !== -1) ||
                 tags.indexOf(string) !== -1;
           }.bind(this);
         }

@@ -21,6 +21,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{questions}}"
     ></firebase-collection>
 
+    <firebase-collection
+      location="{{computedLocation(user, answersLocation)}}"
+      data="{{answers}}"
+    ></firebase-collection>
+
     <firebase-document
       location="{{levelsLocation}}"
       data="{{levels}}"
@@ -40,7 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_locationChanged'
         },
 
+        answersLocation: String,
+
         questions: {
+          notify: true
+        },
+
+        answers: {
           notify: true
         },
 
@@ -50,10 +61,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
 
+      computedLocation: function(user, answersLocation) {
+        if (user) {
+          return answersLocation;
+        }
+      },
+
       _locationChanged: function(location) {
         this.questionsLocation = location + '/questions';
         this.levelsLocation = location + '/levels';
-      }
+      },
+
     });
   })();
   </script>
