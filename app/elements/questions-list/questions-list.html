@@ -35,6 +35,7 @@
       </paper-card>
     </template>
   </template>
+  <script src="../../bower_components/underscore/underscore-min.js"></script>
   <script>
   (function() {
     'use strict';
@@ -70,8 +71,14 @@
         }
       },
 
-      _getRandomVal: function(array) {
-        return array[Math.floor(Math.random() * array.length)];
+      _getRandomVal: function(questions, answers) {
+        var rand = Math.floor(Math.random() * questions.length);
+        if (questions && answers && questions.length > 0 && answers.length > 0) {
+          return _.extend(questions[rand],answers[rand]);
+        } else if (questions && questions.length > 0){
+          return questions[rand];
+        }
+        return [];
       },
 
       _getLevel: function(levels, level) {
@@ -81,7 +88,7 @@
       },
 
       getRandomQuestion: function() {
-        this.randomQuestion = [this._getRandomVal(this.questions)];
+        this.randomQuestion = [this._getRandomVal(this.questions, this.answers)];
       },
 
       computeQuestions: function(isRandom, randomQuestion, questions, answers) {
@@ -105,7 +112,7 @@
                 this.computedQuestions[i][key] = this.answers[i][key];
               }
             }
-          }
+          };
           return this.computedQuestions;
         }
       },

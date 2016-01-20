@@ -10,7 +10,8 @@
     "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
     "polymer": "Polymer/polymer#^1.2.0",
     "paper-menu": "PolymerElements/paper-menu#4fecb43601",
-    "paper-tags-input": "~1.2.2"
+    "paper-tags-input": "~1.2.2",
+    "underscore": "~1.8.3"
   },
   "devDependencies": {
     "web-component-tester": "*"

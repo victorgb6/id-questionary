@@ -44,6 +44,11 @@
       }
     </style>
 
+    <firebase-document
+      location="{{adminsLocation}}"
+      data="{{admins}}"
+    ></firebase-document>
+
     <firebase-auth
       id="firebaseLogin"
       location="{{location}}"
@@ -53,6 +58,8 @@
       user="{{user}}"
       on-login="onSuccess"
     ></firebase-auth>
+
+
 
     <paper-dialog modal
                   opened="{{!user}}"
@@ -80,13 +87,45 @@
         user: {
           notify: true
         },
+
+        admins: {
+          notify: true,
+          observer: '_checkAdmin'
+        },
+
+        isAdmin: {
+          notify: true
+        },
+
         answersLocation: {
           notify: true
+        },
+
+        location: {
+          observer: '_locationChanged'
         }
+
       },
 
-      onSuccess: function() {
+      onSuccess: function(user) {
         this.answersLocation = this.location + '/answers';
+        this._checkAdmin(user);
+      },
+
+      _locationChanged: function(location) {
+        this.adminsLocation = location + '/admins';
+      },
+
+      _checkAdmin: function(e) {
+        if (this.user && this.admins) {
+          this.isAdmin = false;
+          for (var key in this.admins) {
+            if (this.user.uid === key) {
+              this.isAdmin = true;
+            }
+          }
+        }
+        console.log('isAdminLogin->', this.isAdmin);
       },
 
       signIn: function() {

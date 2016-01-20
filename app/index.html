@@ -63,6 +63,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
+    <!-- Application auth -->
+    <app-login id="auth"
+               user="{{user}}"
+               is-admin="{{isAdmin}}"
+               location="[[firebaseURL]]"
+               answers-location="{{answersLocation}}">
+    </app-login>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
@@ -81,22 +89,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-toolbar>
 
         <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
-
-          <a data-route="random-question" href="{{baseUrl}}random-question">
-            <iron-icon icon="av:shuffle"></iron-icon>
-            <span>Random Question</span>
-          </a>
-
-          <a data-route="add-question" href="{{baseUrl}}add-question">
-            <iron-icon icon="add-box"></iron-icon>
-            <span>Add a question</span>
-          </a>
-        </paper-menu>
+        <questions-menu user="{{user}}"
+                        is-admin="{{isAdmin}}"
+                        base-url="{{baseUrl}}"
+                        route="[[route]]">
+        </questions-menu>
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
@@ -118,13 +115,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
 
         </paper-toolbar>
-
-        <!-- Application auth -->
-        <app-login id="auth"
-                   user="{{user}}"
-                   location="[[firebaseURL]]"
-                   answers-location="{{answersLocation}}">
-        </app-login>
 
         <!-- Application data -->
         <questions-data user="{{user}}"
