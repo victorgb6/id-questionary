@@ -67,7 +67,7 @@
 
       _computeRandomQuestion: function(changeRecord) {
         if (changeRecord.path === 'questions.length') {
-          this.randomQuestion = [ this._getRandomVal(this.questions) ];
+          this.randomQuestion = [this._getRandomVal(this.questions)];
         }
       },
 
@@ -75,7 +75,7 @@
         var rand = Math.floor(Math.random() * questions.length);
         if (questions && answers && questions.length > 0 && answers.length > 0) {
           return _.extend(questions[rand],answers[rand]);
-        } else if (questions && questions.length > 0){
+        } else if (questions && questions.length > 0) {
           return questions[rand];
         }
         return [];
@@ -105,19 +105,19 @@
                 this.computedQuestions[i][key] = this.questions[i][key];
               }
             }
-          };
+          }
           for (var i=0; i < this.answers.length; i++) {
             for (var key in this.answers[i]) {
               if (key !== '__firebaseKey__') {
                 this.computedQuestions[i][key] = this.answers[i][key];
               }
             }
-          };
+          }
           return this.computedQuestions;
         }
       },
       keys: function(input) {
-          return (typeof input === 'object') ? Object.keys(input) : input;
+        return (typeof input === 'object') ? Object.keys(input) : input;
       },
       searchFilter: function(string) {
         if (!string) {
