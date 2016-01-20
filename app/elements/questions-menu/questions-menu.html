@@ -40,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 0 16px;
       }
     </style>
-    <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+    <paper-menu hidden$="{{!user}}" class="list" attr-for-selected="data-route" selected="[[route]]">
       <a data-route="home" href="{{baseUrl}}">
         <iron-icon icon="home"></iron-icon>
         <span>Home</span>
