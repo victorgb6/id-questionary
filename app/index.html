@@ -63,32 +63,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
+    <!-- Application auth -->
+    <app-login id="auth"
+               user="{{user}}"
+               is-admin="{{isAdmin}}"
+               location="[[firebaseURL]]"
+               answers-location="{{answersLocation}}">
+    </app-login>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
 
         <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
+        <paper-toolbar id="drawerToolbar" class="medium-tall">
+          <div class="top">
+            <span class="paper-font-title">Menu</span>
+          </div>
+          <div class="middle">
+            <user-profile user="{{user}}"
+                          on-sign-out="signOut">
+            </user-profile>
+          </div>
+
         </paper-toolbar>
 
         <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
-
-          <a data-route="random-question" href="{{baseUrl}}random-question">
-            <iron-icon icon="av:shuffle"></iron-icon>
-            <span>Random Question</span>
-          </a>
-
-          <a data-route="add-question" href="{{baseUrl}}add-question">
-            <iron-icon icon="add-box"></iron-icon>
-            <span>Add a question</span>
-          </a>
-        </paper-menu>
+        <questions-menu user="{{user}}"
+                        is-admin="{{isAdmin}}"
+                        base-url="{{baseUrl}}"
+                        route="[[route]]">
+        </questions-menu>
       </paper-scroll-header-panel>
 
       <!-- Main Area -->
@@ -98,9 +103,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-toolbar id="mainToolbar" class="tall">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
           <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="search"></paper-icon-button>
 
           <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
@@ -114,25 +116,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         </paper-toolbar>
 
+        <!-- Application data -->
+        <questions-data user="{{user}}"
+                        location="[[firebaseURL]]"
+                        answers-location="{{answersLocation}}"
+                        questions="{{questions}}"
+                        answers="{{answers}}"
+                        levels="{{levels}}">
+        </questions-data>
+
         <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+        <questions-view route="{{route}}"
+                        user="{{user}}"
+                        location="[[firebaseURL]]"
+                        questions="{{questions}}"
+                        answers="{{answers}}"
+                        levels="{{levels}}">
+        </questions-view>
 
-            <section data-route="home">
-              <h3><span>Questions List:</span></h3>
-                <questions-list questions="[[questions]]"></questions-list>
-            </section>
-
-            <section data-route="random-question">
-              <h3><span>Random Question</span></h3>
-              <questions-list id="randomQuestion" questions="[[questions]]" is-random></questions-list>
-            </section>
-
-            <section data-route="add-question">
-              <add-question></add-question>
-            </section>
-          </iron-pages>
-        </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
 

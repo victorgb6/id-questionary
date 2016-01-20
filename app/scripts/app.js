@@ -23,6 +23,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // app.baseUrl = '/polymer-starter-kit/';
   }
 
+  app.firebaseURL = 'https://id-questions.firebaseio.com';
+
+  app.signOut = function() {
+    this.$.auth.signOut();
+  };
+
+  app.computeMenu = function(user) {
+    console.log('app.user->',user);
+    // if (user) {
+    //   return user.isAdmin ? true : undefined;
+    // } else {
+    //   return false;
+    // }
+    return false;
+  };
+
   app.displayInstalledToast = function() {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
     if (!Polymer.dom(document).querySelector('platinum-sw-cache').disabled) {

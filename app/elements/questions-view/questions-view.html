@@ -1,0 +1,84 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="questions-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+        padding: 30px 30px 0;
+      }
+    </style>
+    <div class="content" hidden$="{{computeHidden(user)}}">
+      <iron-pages attr-for-selected="data-route" selected="{{route}}">
+
+        <section data-route="home">
+          <h3><span>Questions List:</span></h3>
+            <questions-list questions="[[questions]]"
+                            answers="[[answers]]"
+                            levels="[[levels]]"
+                            user="{{user}}"></questions-list>
+        </section>
+
+        <section data-route="random-question">
+          <h3><span>Random Question</span></h3>
+          <questions-list id="randomQuestion"
+                          questions="[[questions]]"
+                          answers="[[answers]]"
+                          levels="[[levels]]"
+                          user="{{user}}"
+                          is-random></questions-list>
+        </section>
+
+        <section data-route="add-question">
+          <add-question questions="{{questions}}"
+                        answers="{{answers}}"
+                        user="{{user}}"
+                        levels="[[levels]]"
+                        ></add-question>
+        </section>
+      </iron-pages>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'questions-view',
+
+      properties: {
+        route: String,
+
+        questions: Array,
+
+        answers: Array,
+
+        levels: Array,
+
+        user: {
+          notify: true
+        }
+      },
+
+      signOut: function() {
+        this.fire('sign-out');
+      },
+
+      computeHidden: function(user) {
+        return !(!!user && !!user.uid);
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
