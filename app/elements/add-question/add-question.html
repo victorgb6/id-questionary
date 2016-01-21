@@ -93,16 +93,15 @@
         return obj;
       },
 
-      _serializeQuestion: function(date) {
+      _serializeQuestion: function(qKey) {
         var data = {};
-        data.id = date;
         data.question = this.$.question.value;
+        data.answer = qKey;
         return data;
       },
 
-      _serializeAnswer: function(date) {
+      _serializeAnswer: function() {
         var data = {};
-        data.id = date;
         data.answer = this.$.answer.value;
         data.tags = this._processTags(this.$.tags.value);
         data.level = this.$.level.value;
@@ -112,10 +111,10 @@
 
       _handlePresubmit: function(ev) {
         ev.preventDefault();
-        var date = new Date();
-        date = date.getTime();
-        this.push('questions',this._serializeQuestion(date));
-        this.push('answers',this._serializeAnswer(date));
+        var questionsCollection = document.querySelector('#questionsCollection');
+        var answersCollection =  document.querySelector('#answersCollection');
+        var qkey = answersCollection.add(this._serializeAnswer());
+        questionsCollection.add(this._serializeQuestion(qkey.key()));
 
         this.$.form.reset();
         //TODO: This must reset the textarea in a propper way.

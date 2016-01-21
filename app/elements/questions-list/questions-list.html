@@ -25,12 +25,12 @@
       filter="{{searchFilter(searchString)}}"
     >
       <paper-card heading="[[item.question]]">
-        <div class="card-content" hidden$="[[!item.answer]]">[[item.answer]]</div>
-        <div class="card-actions" hidden$="[[!item.tags]]">
-          <template is="dom-repeat" items="[[keys(item.tags)]]" as="tag">
+        <div class="card-content" hidden$="[[!item.answer.answer]]">[[item.answer.answer]]</div>
+        <div class="card-actions" hidden$="[[!item.answer.tags]]">
+          <template is="dom-repeat" items="[[keys(item.answer.tags)]]" as="tag">
             <question-tag>[[tag]]</question-tag>
           </template>
-          <question-tag>[[_getLevel(levels, item.level)]]</question-tag>
+          <question-tag>[[_getLevel(levels, item.answer.level)]]</question-tag>
         </div>
       </paper-card>
     </template>
@@ -95,8 +95,9 @@
         if (isRandom) {
           return this.randomQuestion;
         } else {
-          //Merge both arrays in one
+          //Fetch questions array, and retrieve the answer.
           this.computedQuestions = [];
+          var answersCollection =  document.querySelector('#answersCollection');
 
           for (var i=0; i < this.questions.length; i++) {
             this.computedQuestions[i] = {};
@@ -105,13 +106,7 @@
                 this.computedQuestions[i][key] = this.questions[i][key];
               }
             }
-          }
-          for (var i=0; i < this.answers.length; i++) {
-            for (var key in this.answers[i]) {
-              if (key !== '__firebaseKey__') {
-                this.computedQuestions[i][key] = this.answers[i][key];
-              }
-            }
+            this.computedQuestions[i].answer = answersCollection.getByKey(this.questions[i].answer);
           }
           return this.computedQuestions;
         }

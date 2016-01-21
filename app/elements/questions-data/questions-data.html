@@ -17,16 +17,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style>
     </style>
     <firebase-collection
+      id="questionsCollection"
       location="{{questionsLocation}}"
       data="{{questions}}"
+      on-complete="questionsComplete"
     ></firebase-collection>
 
     <firebase-collection
+      id="answersCollection"
       location="{{computedLocation(user, answersLocation)}}"
       data="{{answers}}"
     ></firebase-collection>
 
     <firebase-document
+      id="levelsCollection"
       location="{{levelsLocation}}"
       data="{{levels}}"
     ></firebase-document>
@@ -55,10 +59,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         },
 
+        computedQuestions: {
+          notify: true
+        },
+
         levels: {
           notify: true
         }
 
+      },
+
+      computeQuestions: function() {
+        console.log('q->',this.questions);
       },
 
       computedLocation: function(user, answersLocation) {
